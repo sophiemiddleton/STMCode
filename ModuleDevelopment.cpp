@@ -133,7 +133,7 @@ int main(){
   if(writefile){
       outputTfile.open("OptT.dat");
   }
-  counting_barrier barrier(15000);
+  counting_barrier barrier(DataList.size());
   thread_pool Pool(THREAD_COUNT);
   auto startT0 = chrono::high_resolution_clock::now();
    for(unsigned s=0; s<DataList.size(); s++){
