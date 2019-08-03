@@ -42,13 +42,6 @@ unsigned N_Management_Threads =1; //used to oversee threading
 unsigned MAX_THREADS = N_cores_per_socket*N_threads_per_core*N_sockets;
 unsigned THREAD_COUNT = 1500;//MAX_THREADS;
 
-//Tester function for threading:
-void printer (int id) {
-  if (id%100){
-  cout << "sample " << id << '\n';
-}
-}
-
 //Basic Tau Finder:
 float UpdateTau(vector<STMDataPacket> DataList, int nSamples, int start, int end){
  float tau =0;
@@ -143,7 +136,7 @@ int main(){
   counting_barrier barrier(15000);
   thread_pool Pool(THREAD_COUNT);
   auto startT0 = chrono::high_resolution_clock::now();
-   for(unsigned s=0; s<15000; s++){
+   for(unsigned s=0; s<DataList.size(); s++){
       
       auto done = Pool.add_task([&barrier, s= s, Sample= DataList[s], t_inf = time_info,wf=writefile, f=factor]{
           GetDMWPulses(s, Sample, t_inf, wf,f);
@@ -156,9 +149,7 @@ int main(){
   cout<<"pulses "<<pulses.size()<<endl;
   auto duration = chrono::duration_cast<chrono::microseconds>(stop - startT0); 
   cout <<"time for MWD full process = "<< duration.count() <<" microseconds "<< endl;
-  for(size_t p=0;p<4;p++){
-      cout<<pulses[p].GetPulseTime()<<endl;
-  }
+  
   if(writefile){outputTfile.close();}
   return 0;
 
